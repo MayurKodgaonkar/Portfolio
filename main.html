@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mayur Kodgaonkar — Analytics Project Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ─── DESIGN TOKENS ────────────────────────────────────────────── */
+:root {
+  --bg:           #060d1a;
+  --surface:      #0a1628;
+  --card:         #0f1f3a;
+  --card-hi:      #142847;
+  --border:       rgba(255,255,255,0.055);
+  --border-hi:    rgba(255,255,255,0.13);
+
+  --text:         #dde6f0;
+  --text-muted:   #7a94ae;
+  --text-dim:     #3d5470;
+
+  --teal:         #1cd3e8;
+  --teal-dim:     rgba(28,211,232,0.12);
+  --amber:        #f5a623;
+  --amber-dim:    rgba(245,166,35,0.12);
+  --green:        #2dd4a0;
+
+  /* Per-project accents */
+  --p1:           #1cd3e8;   /* cyan  — Insight Vault    */
+  --p1-dim:       rgba(28,211,232,0.10);
+  --p2:           #a78bfa;   /* violet — Warehouse Nexus  */
+  --p2-dim:       rgba(167,139,250,0.10);
+  --p3:           #f5a623;   /* amber  — Profitability    */
+  --p3-dim:       rgba(245,166,35,0.10);
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Outfit', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius:       10px;
+  --radius-sm:    6px;
+  --transition:   0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ─── RESET ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 2px; }
+
+/* ─── FIXED SIDE NAV ────────────────────────────────────────────── */
+.side-nav {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-end;
+}
+.side-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity var(--transition);
+}
+.side-nav-item:hover,
+.side-nav-item.active { opacity: 1; }
+.side-nav-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color var(--transition);
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+.side-nav-item:hover .side-nav-label,
+.side-nav-item.active .side-nav-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+.side-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: background var(--transition), transform var(--transition);
+  flex-shrink: 0;
+}
+.side-nav-item.active .side-nav-dot { transform: scale(1.6); }
+.side-nav-item[data-project="0"] .side-nav-dot { background: var(--text-muted); }
+.side-nav-item[data-project="1"].active .side-nav-dot { background: var(--p1); }
+.side-nav-item[data-project="2"].active .side-nav-dot { background: var(--p2); }
+.side-nav-item[data-project="3"].active .side-nav-dot { background: var(--p3); }
+
+/* ─── HERO ───────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 80px 60px;
+  overflow: hidden;
+}
+
+/* Animated mesh gradient */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg);
+}
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 30%, rgba(28,211,232,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(167,139,250,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 60% 20%, rgba(245,166,35,0.04) 0%, transparent 70%);
+  animation: meshFloat 12s ease-in-out infinite alternate;
+}
+@keyframes meshFloat {
+  0%   { opacity: 0.6; transform: scale(1) translate(0, 0); }
+  50%  { opacity: 1;   transform: scale(1.05) translate(-1%, 1%); }
+  100% { opacity: 0.7; transform: scale(1.02) translate(1%, -1%); }
+}
+
+/* Dot grid */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 7vw, 90px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #f0f6ff;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-name em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--teal);
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+/* Stat bar */
+.hero-stats {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+.stat-block {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 18px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: background var(--transition), border-color var(--transition);
+  cursor: default;
+}
+.stat-block:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.stat-block:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+.stat-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--transition);
+}
+.stat-block:hover::before { transform: scaleX(1); }
+.stat-block:hover { background: var(--card-hi); border-color: var(--border-hi); }
+.stat-num {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--amber);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  font-weight: 400;
+}
+
+/* Project preview cards */
+.hero-projects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.0s forwards;
+}
+.preview-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.preview-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.preview-card:nth-child(1)::after { background: var(--p1-dim); }
+.preview-card:nth-child(2)::after { background: var(--p2-dim); }
+.preview-card:nth-child(3)::after { background: var(--p3-dim); }
+.preview-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.preview-card:hover::after { opacity: 1; }
+
+.preview-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.preview-card:nth-child(1) .preview-num { color: var(--p1); }
+.preview-card:nth-child(2) .preview-num { color: var(--p2); }
+.preview-card:nth-child(3) .preview-num { color: var(--p3); }
+
+.preview-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: #f0f6ff;
+  margin-bottom: 5px;
+  position: relative; z-index: 1;
+}
+.preview-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+  position: relative; z-index: 1;
+}
+.preview-metric {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--amber);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  position: relative; z-index: 1;
+}
+.preview-metric-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ─── CONTACT BAR ───────────────────────────────────────────────── */
+.contact-bar {
+  position: absolute;
+  bottom: 32px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s forwards;
+}
+.contact-links {
+  display: flex;
+  gap: 28px;
+}
+.contact-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  transition: color var(--transition);
+}
+.contact-link:hover { color: var(--teal); }
+.scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.scroll-arrow {
+  width: 16px;
+  height: 16px;
+  border-right: 1px solid var(--text-dim);
+  border-bottom: 1px solid var(--text-dim);
+  transform: rotate(45deg) translateY(-3px);
+  animation: scrollBounce 1.8s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: rotate(45deg) translateY(-3px); opacity: 0.4; }
+  50%       { transform: rotate(45deg) translateY(1px);  opacity: 1; }
+}
+
+/* ─── SECTION SHARED ────────────────────────────────────────────── */
+.project-section {
+  padding: 0 0 80px;
+  position: relative;
+}
+.project-section + .project-section {
+  border-top: 1px solid var(--border);
+}
+
+/* Section reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── PROJECT HEADER BAND ───────────────────────────────────────── */
+.project-header {
+  padding: 52px 80px 40px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.project-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  z-index: 0;
+}
+/* glow blob per project */
+.project-header::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(80px);
+  right: -100px;
+  top: -80px;
+  z-index: 0;
+  opacity: 0.35;
+}
+[data-project="1"] .project-header::after { background: var(--p1); }
+[data-project="2"] .project-header::after { background: var(--p2); }
+[data-project="3"] .project-header::after { background: var(--p3); }
+
+.project-header-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+.project-number {
+  font-family: var(--font-display);
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.08;
+  position: absolute;
+  right: 80px;
+  top: -10px;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+[data-project="1"] .project-number { color: var(--p1); }
+[data-project="2"] .project-number { color: var(--p2); }
+[data-project="3"] .project-number { color: var(--p3); }
+
+.project-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+[data-project="1"] .project-id { color: var(--p1); }
+[data-project="2"] .project-id { color: var(--p2); }
+[data-project="3"] .project-id { color: var(--p3); }
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  color: #f0f6ff;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.project-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 300;
+  max-width: 480px;
+}
+.project-meta {
+  text-align: right;
+  flex-shrink: 0;
+}
+.project-meta-company {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-style: italic;
+}
+.project-meta-detail {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* ─── PROJECT BODY (sidebar + content) ─────────────────────────── */
+.project-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 0;
+}
+.project-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 36px 26px;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+.project-content {
+  padding: 48px 64px;
+  background: var(--bg);
+}
+
+/* ─── SIDEBAR COMPONENTS ────────────────────────────────────────── */
+.sidebar-section {
+  margin-bottom: 28px;
+}
+.sidebar-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Metric card */
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+[data-project="1"] .metric-card::before { background: var(--p1); }
+[data-project="2"] .metric-card::before { background: var(--p2); }
+[data-project="3"] .metric-card::before { background: var(--p3); }
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--amber);
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+.metric-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Stack tags */
+.stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.stack-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 9px;
+  border-radius: 3px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.stack-tag:hover { border-color: var(--border-hi); color: var(--text); }
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.role-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+[data-project="1"] .role-dot { background: var(--p1); }
+[data-project="2"] .role-dot { background: var(--p2); }
+[data-project="3"] .role-dot { background: var(--p3); }
+
+/* ─── CONTENT COMPONENTS ────────────────────────────────────────── */
+.section-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.section-tag::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  flex-shrink: 0;
+}
+[data-project="1"] .section-tag::before { background: var(--p1); }
+[data-project="2"] .section-tag::before { background: var(--p2); }
+[data-project="3"] .section-tag::before { background: var(--p3); }
+
+.content-block { margin-bottom: 44px; }
+
+.problem-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  position: relative;
+  overflow: hidden;
+}
+.problem-box::before {
+  content: '"';
+  font-family: var(--font-display);
+  font-size: 120px;
+  font-weight: 700;
+  position: absolute;
+  top: -20px;
+  left: 16px;
+  opacity: 0.04;
+  color: var(--text);
+  line-height: 1;
+  pointer-events: none;
+}
+.problem-box strong { color: var(--text); font-weight: 600; }
+
+/* ─── ARCHITECTURE FLOW ─────────────────────────────────────────── */
+.arch-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 10px 0 6px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.arch-stage {
+  flex: 1;
+  padding: 14px 12px;
+  position: relative;
+  cursor: default;
+  transition: all var(--transition);
+}
+.arch-stage:not(:last-child)::after {
+  content: '›';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text-dim);
+  z-index: 2;
+}
+.arch-stage.bronze { background: rgba(139,94,60,0.15); }
+.arch-stage.silver { background: rgba(92,107,122,0.15); }
+.arch-stage.gold   { background: rgba(160,120,32,0.15); }
+.arch-stage.consume{ background: rgba(28,211,232,0.08); }
+
+.arch-stage:hover.bronze { background: rgba(139,94,60,0.28); }
+.arch-stage:hover.silver { background: rgba(92,107,122,0.28); }
+.arch-stage:hover.gold   { background: rgba(160,120,32,0.28); }
+.arch-stage:hover.consume{ background: rgba(28,211,232,0.16); }
+
+.arch-stage-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.arch-stage.bronze  .arch-stage-label { color: #cd8e5a; }
+.arch-stage.silver  .arch-stage-label { color: #8ea0ae; }
+.arch-stage.gold    .arch-stage-label { color: #c9a84c; }
+.arch-stage.consume .arch-stage-label { color: var(--teal); }
+
+.arch-stage-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.arch-detail {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.arch-detail-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.arch-detail-card strong { color: var(--text); display: block; margin-bottom: 4px; font-size: 12px; }
+
+/* ─── KPI TABLE ─────────────────────────────────────────────────── */
+.kpi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.kpi-table thead th {
+  background: var(--card);
+  padding: 10px 14px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  font-weight: 500;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.kpi-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.kpi-table tbody tr:last-child { border-bottom: none; }
+.kpi-table tbody tr:hover { background: var(--card); }
+.kpi-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.012); }
+.kpi-table tbody tr:nth-child(odd):hover { background: var(--card); }
+.kpi-table td {
+  padding: 10px 14px;
+  vertical-align: top;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.kpi-table td:first-child {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+  padding-right: 20px;
+}
+.kpi-table td .dim { color: var(--text-dim); font-size: 11px; }
+
+/* ─── PILLAR GRID ───────────────────────────────────────────────── */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.pillar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all var(--transition);
+}
+.pillar-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+}
+.pillar-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+[data-project="2"] .pillar-title { color: var(--p2); }
+.pillar-items {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.pillar-items li {
+  list-style: none;
+  padding-left: 12px;
+  position: relative;
+}
+.pillar-items li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--text-dim);
+}
+
+/* ─── OUTCOME BOX ───────────────────────────────────────────────── */
+.outcome-box {
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.outcome-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  z-index: 0;
+}
+[data-project="1"] .outcome-box { border: 1px solid rgba(28,211,232,0.2); }
+[data-project="1"] .outcome-box::before { background: var(--p1); }
+[data-project="2"] .outcome-box { border: 1px solid rgba(167,139,250,0.2); }
+[data-project="2"] .outcome-box::before { background: var(--p2); }
+[data-project="3"] .outcome-box { border: 1px solid rgba(245,166,35,0.2); }
+[data-project="3"] .outcome-box::before { background: var(--p3); }
+
+.outcome-box-inner {
+  position: relative;
+  z-index: 1;
+}
+.outcome-item {
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding-left: 18px;
+  position: relative;
+}
+.outcome-item:last-child { margin-bottom: 0; }
+.outcome-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 7px;
+  height: 1px;
+}
+[data-project="1"] .outcome-item::before { background: var(--p1); }
+[data-project="2"] .outcome-item::before { background: var(--p2); }
+[data-project="3"] .outcome-item::before { background: var(--p3); }
+.outcome-item strong { color: var(--text); font-weight: 600; }
+
+/* ─── WATERFALL CHART (Project 3) ───────────────────────────────── */
+.waterfall {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 90px;
+  padding: 0 4px;
+  margin: 12px 0;
+}
+.waterfall-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: opacity var(--transition);
+  cursor: default;
+  min-height: 20px;
+}
+.waterfall-bar:hover { opacity: 0.85; }
+.waterfall-bar-label {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+.waterfall-bar-val {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ─── DIVIDER ───────────────────────────────────────────────────── */
+.content-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 36px 0;
+}
+
+/* ─── FOOTER ────────────────────────────────────────────────────── */
+.footer {
+  padding: 40px 80px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+}
+.footer-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-style: italic;
+  color: var(--text-muted);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: color var(--transition);
+  letter-spacing: 0.05em;
+}
+.footer-link:hover { color: var(--teal); }
+
+/* ─── KEYFRAMES ─────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .hero, .contact-bar { padding-left: 40px; padding-right: 40px; }
+  .project-header { padding: 40px 40px 30px; }
+  .project-content { padding: 36px 40px; }
+  .project-body { grid-template-columns: 240px 1fr; }
+  .hero-projects { grid-template-columns: 1fr; }
+  .side-nav { display: none; }
+}
+@media (max-width: 768px) {
+  .project-body { grid-template-columns: 1fr; }
+  .project-sidebar { position: static; max-height: none; }
+  .hero-stats { flex-wrap: wrap; }
+  .stat-block { min-width: calc(50% - 1px); }
+}
+
+/* ─── PRINT ─────────────────────────────────────────────────────── */
+@media print {
+  .side-nav { display: none; }
+  .scroll-hint { display: none; }
+  body { background: white; color: black; }
+}
+
+/* ─── THEME TOGGLE OVERRIDES ────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:           #f8fafc;
+  --surface:      #ffffff;
+  --card:         #f1f5f9;
+  --card-hi:      #e2e8f0;
+  --border:       rgba(0,0,0,0.08);
+  --border-hi:    rgba(0,0,0,0.15);
+  --text:         #0f172a;
+  --text-muted:   #475569;
+  --text-dim:     #94a3b8;
+}
+[data-theme="light"] .hero-name,
+[data-theme="light"] .project-title,
+[data-theme="light"] .preview-title,
+[data-theme="light"] .arch-detail-card strong,
+[data-theme="light"] .problem-box strong,
+[data-theme="light"] .outcome-item strong {
+  color: #0f172a !important;
+}
+[data-theme="light"] .hero-bg::after {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+}
+[data-theme="light"] .kpi-table tbody tr:nth-child(odd) {
+  background: rgba(0,0,0,0.02);
+}
+[data-theme="light"] .kpi-table tbody tr:hover {
+  background: rgba(0,0,0,0.04);
+}
+[data-theme="light"] .stat-block,
+[data-theme="light"] .preview-card,
+[data-theme="light"] .metric-card,
+[data-theme="light"] .problem-box,
+[data-theme="light"] .arch-detail-card,
+[data-theme="light"] .pillar-card {
+  background: #ffffff;
+}
+[data-theme="light"] .arch-stage.bronze { background: rgba(139,94,60,0.08); }
+[data-theme="light"] .arch-stage.silver { background: rgba(92,107,122,0.08); }
+[data-theme="light"] .arch-stage.gold { background: rgba(160,120,32,0.08); }
+[data-theme="light"] .arch-stage.consume { background: rgba(28,211,232,0.05); }
+
+.theme-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 1000;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.theme-toggle-btn:hover {
+  background: var(--card-hi);
+  border-color: var(--border-hi);
+}
+@media print { .theme-toggle-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="side-nav" aria-label="Project navigation">
+  <div class="side-nav-item active" data-project="0" onclick="scrollToSection('hero')">
+    <span class="side-nav-label">Overview</span>
+    <div class="side-nav-dot"></div>
+  </div>
+  <div class="side-nav-item" data-project="1" onclick="scrollToSection('p1')">
+    <span class="side-nav-label">Insight Vault</span>
+    <div class="side-nav-dot"></div>
+  </div>
+  <div class="side-nav-item" data-project="2" onclick="scrollToSection('p2')">
+    <span class="side-nav-label">Warehouse Nexus</span>
+    <div class="side-nav-dot"></div>
+  </div>
+  <div class="side-nav-item" data-project="3" onclick="scrollToSection('p3')">
+    <span class="side-nav-label">Profitability Portal</span>
+    <div class="side-nav-dot"></div>
+  </div>
+</nav>
+
+<section id="hero" class="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Analytics Project Portfolio · 2025</div>
+
+    <h1 class="hero-name">Mayur <em>Kodgaonkar</em></h1>
+
+    <p class="hero-subtitle">
+      Analytics Business Partner · Commercial &amp; Supply Chain Intelligence · Azure Data Engineering
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat-block">
+        <div class="stat-num" data-count="3">0</div>
+        <div class="stat-label">End-to-end projects documented</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" data-count="96" data-suffix="%">0%</div>
+        <div class="stat-label">Max reporting time eliminated</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" data-count="35" data-suffix="+">0+</div>
+        <div class="stat-label">KPIs across a single pipeline</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" data-count="8" data-suffix="-tier">0-tier</div>
+        <div class="stat-label">Discount cascade modelled</div>
+      </div>
+    </div>
+
+    <div class="hero-projects">
+      <div class="preview-card" onclick="scrollToSection('p1')">
+        <div class="preview-num">PROJECT 01</div>
+        <div class="preview-title">Insight Vault</div>
+        <div class="preview-desc">Enterprise Sales &amp; Collections Intelligence Hub · Asian Paints</div>
+        <div class="preview-metric">
+          96%
+          <span class="preview-metric-label">reporting time cut</span>
+        </div>
+      </div>
+      <div class="preview-card" onclick="scrollToSection('p2')">
+        <div class="preview-num">PROJECT 02</div>
+        <div class="preview-title">Warehouse Nexus</div>
+        <div class="preview-desc">Azure Fulfillment Intelligence Platform · Finolex Industries</div>
+        <div class="preview-metric">
+          14 days
+          <span class="preview-metric-label">end-to-end build</span>
+        </div>
+      </div>
+      <div class="preview-card" onclick="scrollToSection('p3')">
+        <div class="preview-num">PROJECT 03</div>
+        <div class="preview-title">Profitability Portal</div>
+        <div class="preview-desc">Margin &amp; Pricing Intelligence Platform · Finolex Industries</div>
+        <div class="preview-metric">
+          8-tier
+          <span class="preview-metric-label">discount cascade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-bar">
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:mayurk787@gmail.com">mayurk787@gmail.com</a>
+      <a class="contact-link" href="https://www.linkedin.com/in/mayursk" target="_blank">linkedin.com/in/mayursk</a>
+      <span class="contact-link">+91 78755 30556 · Pune</span>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="p1" class="project-section" data-project="1">
+
+  <div class="project-header reveal">
+    <div class="project-number">01</div>
+    <div class="project-header-inner">
+      <div>
+        <div class="project-id">Project 01 · 2022–2024</div>
+        <h2 class="project-title">Insight Vault</h2>
+        <p class="project-subtitle">Enterprise Sales &amp; Collections Intelligence Hub</p>
+      </div>
+      <div class="project-meta">
+        <div class="project-meta-company">Asian Paints Ltd.</div>
+        <div class="project-meta-detail">
+          Mumbai &amp; Pune<br>
+          Rs. 4,500 Cr Division<br>
+          Decorative Paints · Fortune 500 India
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <aside class="project-sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Headline Metrics</div>
+        <div class="metric-card">
+          <div class="metric-value" data-count="96" data-suffix="%">—</div>
+          <div class="metric-desc">Daily reporting time eliminated</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">4 hrs → 10 min</div>
+          <div class="metric-desc">Workflow transformation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" data-count="15" data-prefix="+" data-suffix="%">—</div>
+          <div class="metric-desc">Timely collections (6-month)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">~1,000 hrs</div>
+          <div class="metric-desc">Annual analyst time reclaimed</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Role</div>
+        <div class="role-badge">
+          <div class="role-dot"></div>
+          Sales Operations Analyst
+        </div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:6px;">Sole analyst · end-to-end ownership</p>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Technology</div>
+        <div class="stack-tags">
+          <span class="stack-tag">Power Query</span>
+          <span class="stack-tag">Power Pivot</span>
+          <span class="stack-tag">SAP BW</span>
+          <span class="stack-tag">Salesforce</span>
+          <span class="stack-tag">DAX</span>
+          <span class="stack-tag">VBA</span>
+          <span class="stack-tag">Star Schema</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Stakeholders</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:2;">
+          VP Sales<br>General Managers<br>Regional Sales Managers<br>Finance Controllers
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="project-content">
+
+      <div class="content-block reveal">
+        <div class="section-tag">The Business Problem</div>
+        <div class="problem-box">
+          The regional analytics function at Asian Paints ran on <strong>manual, fragmented processes</strong> — consuming 4 hours of analyst time every day just to consolidate data before any real analysis could begin. Two systems, SAP SD and Salesforce CRM, had never been unified. No one could answer whether a field executive's visits were converting into orders or collections. Dealer payment behaviour was tracked anecdotally. Receivables aging had no risk classification. Leadership was making commercial decisions on <strong>stale, manually-assembled data</strong> with no systematic early-warning mechanism for credit risk.
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Solution Architecture</div>
+
+        <div class="arch-flow">
+          <div class="arch-stage bronze">
+            <div class="arch-stage-label">Ingestion</div>
+            <div class="arch-stage-desc">SAP SD + Salesforce CRM · 500K+ daily records · automated refresh</div>
+          </div>
+          <div class="arch-stage silver">
+            <div class="arch-stage-label">Modelling</div>
+            <div class="arch-stage-desc">Star Schema · 6 dimension tables · 100% ERP–CRM parity</div>
+          </div>
+          <div class="arch-stage gold">
+            <div class="arch-stage-label">Intelligence</div>
+            <div class="arch-stage-desc">Complex DAX · PEI index · aging buckets · MoM variance</div>
+          </div>
+          <div class="arch-stage consume">
+            <div class="arch-stage-label">Consumption</div>
+            <div class="arch-stage-desc">Power BI dashboards · Excel self-serve for Finance</div>
+          </div>
+        </div>
+
+        <div class="arch-detail" style="margin-top:14px;">
+          <div class="arch-detail-card">
+            <strong>Ingestion Layer</strong>
+            Power Query automated ETL replaced all manual SAP/Salesforce extraction. Single-click refresh reduced 4-hour daily prep to under 10 minutes.
+          </div>
+          <div class="arch-detail-card">
+            <strong>Star Schema Model</strong>
+            Sales Invoices as central fact table. Dimensions: Geography, Customer, Product, Time, Sales Executive. Memory-optimised for 500K+ row performance.
+          </div>
+          <div class="arch-detail-card">
+            <strong>DAX Intelligence</strong>
+            Dealer PEI (Payment Efficiency Index), overdue aging buckets (0–30, 31–60, 61–90, 90+ days), field ROI correlation, and MoM/YoY variance sliced by 4 dimensions.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Key Analytics Designed</div>
+        <table class="kpi-table">
+          <thead>
+            <tr>
+              <th>KPI / Measure</th>
+              <th>Business Question Answered</th>
+              <th>Dimension</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dealer Payment Efficiency Index (PEI)</td>
+              <td>Which dealers are systematically slow payers — before they become a credit problem?</td>
+              <td><span class="dim">Customer · Region</span></td>
+            </tr>
+            <tr>
+              <td>Overdue Aging Buckets</td>
+              <td>What is our exact receivables exposure by time band, and who do we call first?</td>
+              <td><span class="dim">0–30, 31–60, 61–90, 90+ days</span></td>
+            </tr>
+            <tr>
+              <td>Field ROI Correlation</td>
+              <td>Are executive visits actually converting to orders and collections, or just activity?</td>
+              <td><span class="dim">Salesperson · Territory</span></td>
+            </tr>
+            <tr>
+              <td>MoM / YoY Variance</td>
+              <td>Where are we growing or declining, and why, vs. same period last year?</td>
+              <td><span class="dim">Geo · Customer Tier · Product</span></td>
+            </tr>
+            <tr>
+              <td>Customer Tier Segmentation</td>
+              <td>Which customers drive disproportionate revenue and deserve priority coverage?</td>
+              <td><span class="dim">Clustering by volume · value</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Decision Outcomes</div>
+        <div class="outcome-box">
+          <div class="outcome-box-inner">
+            <div class="outcome-item"><strong>Collections Impact:</strong> The PEI early-warning system enabled Finance to prioritise targeted dealer follow-up over blanket outreach — contributing to a 15% improvement in timely collections within six months, a result directly traceable to this intelligence layer.</div>
+            <div class="outcome-item"><strong>Commercial Strategy:</strong> Field ROI correlation model gave VPs data to ground territory coverage decisions and performance benchmarks — replacing gut judgement with behavioural evidence for the first time.</div>
+            <div class="outcome-item"><strong>Analyst Capacity:</strong> ~1,000 hours of annual analyst time reclaimed from data preparation. Redirected into actual analytical work: pricing analysis, promotional scheme effectiveness, and customer segmentation studies.</div>
+          </div>
+        </div>
+      </div>
+
+    </div></div></section>
+
+
+<section id="p2" class="project-section" data-project="2">
+
+  <div class="project-header reveal">
+    <div class="project-number">02</div>
+    <div class="project-header-inner">
+      <div>
+        <div class="project-id">Project 02 · 2025</div>
+        <h2 class="project-title">Warehouse Nexus</h2>
+        <p class="project-subtitle">End-to-End Azure Fulfillment Intelligence Platform</p>
+      </div>
+      <div class="project-meta">
+        <div class="project-meta-company">Finolex Industries Ltd.</div>
+        <div class="project-meta-detail">
+          Pune<br>
+          New High-Capacity Facility<br>
+          Pipes &amp; Fittings · Rs. 4,300 Cr
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <aside class="project-sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Headline Metrics</div>
+        <div class="metric-card">
+          <div class="metric-value">14 days</div>
+          <div class="metric-desc">End-to-end delivery · Day 1 live</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" data-count="35" data-suffix="+">—</div>
+          <div class="metric-desc">KPIs across 5 operational pillars</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">10+ GB</div>
+          <div class="metric-desc">Daily data flow monitored</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">Month 1</div>
+          <div class="metric-desc">Dead stock identified, liquidation triggered</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Role</div>
+        <div class="role-badge">
+          <div class="role-dot"></div>
+          Data Architect &amp; Lead Analyst
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Technology</div>
+        <div class="stack-tags">
+          <span class="stack-tag">Azure ADF</span>
+          <span class="stack-tag">Databricks</span>
+          <span class="stack-tag">PySpark</span>
+          <span class="stack-tag">ADLS Gen2</span>
+          <span class="stack-tag">Azure SQL DB</span>
+          <span class="stack-tag">Power BI</span>
+          <span class="stack-tag">SAP S/4HANA</span>
+          <span class="stack-tag">Medallion Arch.</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Architecture Pattern</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:2;">
+          Bronze → Silver → Gold<br>
+          Incremental ADF loads<br>
+          Star Schema Gold layer<br>
+          Custom snapshotting algo
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="project-content">
+
+      <div class="content-block reveal">
+        <div class="section-tag">The Business Problem</div>
+        <div class="problem-box">
+          A new, high-capacity warehouse launched with <strong>no historical data, no benchmarks, and zero analytics infrastructure</strong>. Leadership needed it to be data-driven from Day 1 of operations — not weeks later once data had accumulated. A structural SAP constraint compounded the challenge: SAP stores only <em>current</em> stock levels, making historical inventory analysis <strong>technically impossible</strong> without custom engineering. The entire platform — ingestion, transformation, modelling, and dashboards — had to be delivered within a <strong>14-day compressed window</strong>, with warehouse operations commencing simultaneously.
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Solution Architecture — Medallion Framework</div>
+
+        <div class="arch-flow">
+          <div class="arch-stage bronze">
+            <div class="arch-stage-label">Bronze</div>
+            <div class="arch-stage-desc">SAP Sales Orders, Inventory movements, Inbound receipts · Incremental ADF loads · Raw in ADLS</div>
+          </div>
+          <div class="arch-stage silver">
+            <div class="arch-stage-label">Silver</div>
+            <div class="arch-stage-desc">PySpark cleansing + <strong>custom stock snapshotting algorithm</strong> · historical reconstruction from audit trails</div>
+          </div>
+          <div class="arch-stage gold">
+            <div class="arch-stage-label">Gold</div>
+            <div class="arch-stage-desc">35+ KPI business logic · Star Schema · threshold flags · benchmark comparisons</div>
+          </div>
+          <div class="arch-stage consume">
+            <div class="arch-stage-label">Power BI</div>
+            <div class="arch-stage-desc">Executive dashboards · Ops dashboards · daily automated refresh</div>
+          </div>
+        </div>
+
+        <div class="arch-detail" style="margin-top:14px;">
+          <div class="arch-detail-card">
+            <strong>The SAP Stock Gap — Engineering Solution</strong>
+            SAP exposes only current stock. Built a custom PySpark snapshotting algorithm that back-calculates daily historical stock by reconciling current inventory against historical Sales Orders and Inbound receipts — reconstructing a full inventory timeline from transactional audit trails where none existed.
+          </div>
+          <div class="arch-detail-card">
+            <strong>Day 1 Benchmarking</strong>
+            By back-calculating historical stock data, the new facility could be compared against legacy warehouse baselines from the first day of operation — turning a data disadvantage into a structured improvement roadmap with specific, measurable gap targets.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">KPI Taxonomy — 5 Operational Pillars</div>
+        <div class="pillar-grid">
+          <div class="pillar-card">
+            <div class="pillar-title">Inventory Health</div>
+            <ul class="pillar-items">
+              <li>SKU / product / dealer-level stock</li>
+              <li>Days on Hand</li>
+              <li>ABC velocity analysis</li>
+              <li>Slow vs. fast-mover segmentation</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-title">Inbound Logistics</div>
+            <ul class="pillar-items">
+              <li>Inwarding Cycle Time (ICT)</li>
+              <li>Gate Entry → Binning tracking</li>
+              <li>Benchmarked vs. legacy facilities</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-title">Operational Flow</div>
+            <ul class="pillar-items">
+              <li>Picking-to-Pre-Staging ICT</li>
+              <li>Loading time per vehicle</li>
+              <li>Shift throughput calculations</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-title">Order Fulfilment</div>
+            <ul class="pillar-items">
+              <li>OFR: Total vs. Serviceable split</li>
+              <li>Order backlog tracking</li>
+              <li>Full OCT drill-down by cause</li>
+            </ul>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-title">Outbound Velocity</div>
+            <ul class="pillar-items">
+              <li>TAT: Dispatch dock efficiency</li>
+              <li>Departure compliance tracking</li>
+              <li>Delivery departure monitoring</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Decision Outcomes</div>
+        <div class="outcome-box">
+          <div class="outcome-box-inner">
+            <div class="outcome-item"><strong>Serviceable vs. Total OFR:</strong> Leadership could distinguish stock-out failures from processing delays for the first time — enabling targeted corrective action on each cause independently rather than treating all fulfilment failures as one undifferentiated problem.</div>
+            <div class="outcome-item"><strong>Benchmarking as a Roadmap:</strong> ICT and TAT comparison against legacy warehouses turned the new facility's data disadvantage into a structured improvement roadmap. Specific, measurable gap targets replaced generic "improve operations" mandates.</div>
+            <div class="outcome-item"><strong>Dead Stock Recovery:</strong> Slow-moving inventory identified within Month 1 through ABC velocity analysis, triggering targeted liquidation campaigns that would otherwise have taken quarters to surface through manual stock reviews.</div>
+          </div>
+        </div>
+      </div>
+
+    </div></div></section>
+
+
+<section id="p3" class="project-section" data-project="3">
+
+  <div class="project-header reveal">
+    <div class="project-number">03</div>
+    <div class="project-header-inner">
+      <div>
+        <div class="project-id">Project 03 · 2025 (Active)</div>
+        <h2 class="project-title">Profitability Portal</h2>
+        <p class="project-subtitle">End-to-End Enterprise Margin &amp; Pricing Intelligence Platform</p>
+      </div>
+      <div class="project-meta">
+        <div class="project-meta-company">Finolex Industries Ltd.</div>
+        <div class="project-meta-detail">
+          Pune<br>
+          Rs. 4,300 Cr Business<br>
+          Senior Leadership · Finance · Costing
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <aside class="project-sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Headline Metrics</div>
+        <div class="metric-card">
+          <div class="metric-value">8-tier</div>
+          <div class="metric-desc">Successive discount cascade fully modelled</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">4 modules</div>
+          <div class="metric-desc">SAP modules joined for first true margin view</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">Per kg</div>
+          <div class="metric-desc">Margin granularity: Geo · Product · Salesperson</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">Zero</div>
+          <div class="metric-desc">Prior automated margin visibility existed</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Role</div>
+        <div class="role-badge">
+          <div class="role-dot"></div>
+          Data Architect &amp; Lead Analyst
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">SAP Sources</div>
+        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);line-height:2.1;">
+          VBAK / VBRK (Orders/Invoices)<br>
+          KONV (Pricing Conditions)<br>
+          MAST / STKO / STPO (BOM)<br>
+          ACDOCA (Universal Journal)<br>
+          ZSCHEMES / ZSDISCOUNT / ZCN
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Technology</div>
+        <div class="stack-tags">
+          <span class="stack-tag">Azure ADF</span>
+          <span class="stack-tag">Databricks</span>
+          <span class="stack-tag">PySpark</span>
+          <span class="stack-tag">ADLS Gen2</span>
+          <span class="stack-tag">Power BI</span>
+          <span class="stack-tag">Excel Power Pivot</span>
+          <span class="stack-tag">SAP S/4HANA</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="project-content">
+
+      <div class="content-block reveal">
+        <div class="section-tag">The Business Problem</div>
+        <div class="problem-box">
+          Senior Leadership and Finance faced a fundamental blind spot: <strong>no one could reliably state what the actual margin on a product was, after all discounts and costs.</strong> The structural complexity was severe — Finolex operates an 8-level successive discount cascade (Gross Sale through eight sequential deduction tiers to final Sales Realization), requiring joins across SAP SD invoices, Bill of Materials costing, GL cost centers, and custom scheme Z-tables. None of this existed in automated form. Finance produced profitability estimates through <strong>fragmented, analyst-dependent spreadsheets</strong> that were inconsistent, time-consuming, and impossible to slice by geography or salesperson at scale. Every pricing discussion started with disputed margin figures.
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Solution Architecture — Medallion Framework</div>
+
+        <div class="arch-flow">
+          <div class="arch-stage bronze">
+            <div class="arch-stage-label">Bronze</div>
+            <div class="arch-stage-desc">4 SAP modules + 3 custom Z-tables · ADF incremental pipelines · full lineage in ADLS</div>
+          </div>
+          <div class="arch-stage silver">
+            <div class="arch-stage-label">Silver</div>
+            <div class="arch-stage-desc">8-tier discount cascade (iterative PySpark) · BOM joins · validation checkpoints at each tier</div>
+          </div>
+          <div class="arch-stage gold">
+            <div class="arch-stage-label">Gold</div>
+            <div class="arch-stage-desc">Profitability Star Schema · per-kg conversion · dual-consumption design</div>
+          </div>
+          <div class="arch-stage consume">
+            <div class="arch-stage-label">Consumption</div>
+            <div class="arch-stage-desc">Power BI (visual) + Excel Power Pivot (Finance self-serve) — same Gold layer</div>
+          </div>
+        </div>
+
+        <div class="arch-detail" style="margin-top:14px;">
+          <div class="arch-detail-card">
+            <strong>The 8-Tier Engineering Challenge</strong>
+            Each discount tier's base is the net value after the prior tier's deduction — a cascade that fails catastrophically if any level is processed out of order. Implemented iterative PySpark with validation checkpoints at each tier (D1→D8), outputting an intermediate auditable dataset per tier. Finance can reconcile any level independently.
+          </div>
+          <div class="arch-detail-card">
+            <strong>Dual Consumption Design</strong>
+            Power BI for leadership visual analytics and Excel Power Pivot for Finance ad-hoc modelling — both connected to the same Gold layer. Finance analysts can run sensitivity scenarios without raising data requests, eliminating a chronic bottleneck between Finance and the data team.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Price Pipeline — Margin Waterfall</div>
+
+        <div class="waterfall-container" style="padding: 30px 0 40px; position: relative;">
+          <div class="waterfall" id="waterfall">
+            </div>
+          </div>
+
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.6;">
+          Illustrative cascade: each bar represents the cumulative deduction at that stage. The <span style="color:var(--amber);font-weight:600;">amber bar</span> is the final Contribution Margin — the true metric that informs pricing decisions.
+        </p>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">KPI Framework — Margin Metrics</div>
+        <table class="kpi-table">
+          <thead>
+            <tr>
+              <th>KPI</th>
+              <th>Definition &amp; Business Use</th>
+              <th>Analysis Dimension</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gross Sales</td>
+              <td>Total invoiced value before any deductions — the starting point of the cascade</td>
+              <td><span class="dim">Geo · Product · Salesperson</span></td>
+            </tr>
+            <tr>
+              <td>Total Discount Applied</td>
+              <td>Cumulative sum across all 8 successive discount tiers (D1–D8)</td>
+              <td><span class="dim">Per tier breakdown</span></td>
+            </tr>
+            <tr>
+              <td>Scheme Discount</td>
+              <td>Discount attributable specifically to ZSCHEMES entries — isolates trade promotion spend</td>
+              <td><span class="dim">Scheme · Channel · Period</span></td>
+            </tr>
+            <tr>
+              <td>Net Sales</td>
+              <td>Gross after all discount tiers — the revenue figure Finance uses for reporting</td>
+              <td><span class="dim">Per-kg conversion</span></td>
+            </tr>
+            <tr>
+              <td>Material Cost (BOM)</td>
+              <td>BOM-derived raw material cost per finished unit from MAST/STKO/STPO tables</td>
+              <td><span class="dim">Product Group · Material</span></td>
+            </tr>
+            <tr>
+              <td>Contribution Margin</td>
+              <td>Net Sales minus Material &amp; Conversion Cost — the true decision metric for pricing</td>
+              <td><span class="dim">Full dimensional slice</span></td>
+            </tr>
+            <tr>
+              <td>Sales Realization</td>
+              <td>Final revenue actually realised vs. original Gross — the ultimate efficiency measure</td>
+              <td><span class="dim">Salesperson · Region</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-block reveal">
+        <div class="section-tag">Strategic Business Value</div>
+        <div class="outcome-box">
+          <div class="outcome-box-inner">
+            <div class="outcome-item"><strong>Pricing Decisions on Fact:</strong> Leadership can now ground pricing strategy in auditable, automated per-kg margin data by Geography, Material Group, and Salesperson — replacing approximated spreadsheet estimates that varied analyst-to-analyst and generated disputed margin figures in every pricing discussion.</div>
+            <div class="outcome-item"><strong>Trade Promotion ROI:</strong> Isolating scheme discount contribution (ZSCHEMES) from standard pricing discounts lets the commercial team evaluate whether trade promotion spend generates proportionate revenue uplift — a question that had no systematic answer before this platform.</div>
+            <div class="outcome-item"><strong>Finance Self-Service:</strong> Dual-consumption design (Power BI + Excel Power Pivot on the same Gold layer) enables Finance analysts to run sensitivity models independently, without raising data requests for every what-if scenario, eliminating a chronic dependency bottleneck.</div>
+          </div>
+        </div>
+      </div>
+
+    </div></div></section>
+
+
+<footer class="footer">
+  <div class="footer-name">Mayur Kodgaonkar</div>
+  <div class="footer-links">
+    <a class="footer-link" href="mailto:mayurk787@gmail.com">mayurk787@gmail.com</a>
+    <a class="footer-link" href="https://www.linkedin.com/in/mayursk" target="_blank">linkedin.com/in/mayursk</a>
+    <span class="footer-link">Analytics Project Portfolio · 2025</span>
+  </div>
+</footer>
+
+<button id="themeToggleBtn" class="theme-toggle-btn">Enable Dark Mode</button>
+
+<script>
+/* ── 1. Smooth scroll helper ─────────────────────────────────── */
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── 2. Scroll-reveal (Intersection Observer) ───────────────── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      // Stagger siblings slightly
+      const siblings = entry.target.parentElement.querySelectorAll('.reveal');
+      let delay = 0;
+      siblings.forEach((sib, idx) => {
+        if (sib === entry.target) delay = idx * 60;
+      });
+      setTimeout(() => entry.target.classList.add('visible'), delay);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ── 3. Animated counter ─────────────────────────────────────── */
+function animateCounter(el) {
+  const target   = parseInt(el.dataset.count, 10);
+  const prefix   = el.dataset.prefix  || '';
+  const suffix   = el.dataset.suffix  || '';
+  const duration = 1600;
+  const start    = performance.now();
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function step(now) {
+    const elapsed  = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const value    = Math.round(easeOut(progress) * target);
+    el.textContent = prefix + value + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+/* ── 4. Active side-nav on scroll ───────────────────────────── */
+const sections = [
+  { id: 'hero', nav: 0 },
+  { id: 'p1',   nav: 1 },
+  { id: 'p2',   nav: 2 },
+  { id: 'p3',   nav: 3 },
+];
+const navItems = document.querySelectorAll('.side-nav-item');
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const match = sections.find(s => s.id === entry.target.id);
+      if (!match) return;
+      navItems.forEach(n => n.classList.remove('active'));
+      navItems[match.nav].classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => {
+  const el = document.getElementById(s.id);
+  if (el) navObserver.observe(el);
+});
+
+/* ── 5. Waterfall chart (Project 3) ─────────────────────────── */
+(function buildWaterfall() {
+  const container = document.getElementById('waterfall');
+  if (!container) return;
+
+  const stages = [
+    { label: 'Gross Sales',   val: 100, color: '#1a3a5c' },
+    { label: 'D1–D4 Disc.',   val: 88,  color: '#5C6B7A' },
+    { label: 'D5–D8 Disc.',   val: 75,  color: '#5C6B7A' },
+    { label: 'Net Sales',     val: 75,  color: '#006d77' },
+    { label: 'Material Cost', val: 55,  color: '#8B5E3C' },
+    { label: 'Conv. Cost',    val: 45,  color: '#7a6a3a' },
+    { label: 'Contribution',  val: 45,  color: '#f5a623' },
+    { label: 'Realization',   val: 72,  color: '#A07820' },
+  ];
+
+  const maxVal = 100;
+  const containerH = 90;
+
+  stages.forEach(s => {
+    const bar = document.createElement('div');
+    const pct = (s.val / maxVal) * containerH;
+    bar.className = 'waterfall-bar';
+    bar.style.cssText = `
+      background: ${s.color};
+      height: ${pct}px;
+      border-radius: 4px 4px 0 0;
+      flex: 1;
+      position: relative;
+      cursor: default;
+      transition: opacity 0.3s;
+      min-height: 20px;
+    `;
+    bar.title = s.label + ' — ' + s.val + ' (index)';
+
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `
+      position: absolute;
+      bottom: -26px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-35deg);
+      transform-origin: top center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #3d5470;
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    `;
+    lbl.textContent = s.label;
+    bar.appendChild(lbl);
+
+    // value tooltip on hover
+    bar.addEventListener('mouseover', () => { bar.style.opacity = '0.8'; });
+    bar.addEventListener('mouseout', () => { bar.style.opacity = '1'; });
+
+    container.appendChild(bar);
+  });
+})();
+
+/* ── 6. Hero stats — trigger counters immediately ───────────── */
+document.querySelectorAll('.hero-stats [data-count]').forEach(el => {
+  // Hero stats animate after 1.5s (after animation-delay of hero)
+  setTimeout(() => animateCounter(el), 1500);
+});
+
+/* ── 7. Theme Toggle ─────────────────────────────────────────── */
+const themeBtn = document.getElementById('themeToggleBtn');
+themeBtn.addEventListener('click', () => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    themeBtn.textContent = 'Enable Light Mode';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeBtn.textContent = 'Enable Dark Mode';
+  }
+});
+</script>
+
+</body>
+</html>
