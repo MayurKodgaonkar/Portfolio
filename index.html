@@ -936,18 +936,43 @@ a { color: inherit; text-decoration: none; }
 
 /* ─── RESPONSIVE ────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .hero, .contact-bar { padding-left: 40px; padding-right: 40px; }
+  .hero, .contact-bar, .footer { padding-left: 40px; padding-right: 40px; }
   .project-header { padding: 40px 40px 30px; }
   .project-content { padding: 36px 40px; }
   .project-body { grid-template-columns: 240px 1fr; }
   .hero-projects { grid-template-columns: 1fr; }
   .side-nav { display: none; }
 }
+
 @media (max-width: 768px) {
   .project-body { grid-template-columns: 1fr; }
-  .project-sidebar { position: static; max-height: none; }
+  .project-sidebar { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
   .hero-stats { flex-wrap: wrap; }
-  .stat-block { min-width: calc(50% - 1px); }
+  .stat-block { min-width: calc(50% - 2px); }
+  .project-header-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .project-meta { text-align: left; }
+  .contact-bar { flex-direction: column; align-items: flex-start; gap: 20px; position: static; margin-top: 40px; padding-bottom: 40px; }
+  .scroll-hint { display: none; }
+  .footer { flex-direction: column; align-items: flex-start; gap: 16px; }
+  
+  /* Prevent table and arch-flow from breaking viewport */
+  .kpi-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .arch-flow { flex-direction: column; border: none; gap: 8px; }
+  .arch-stage { border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .arch-stage:not(:last-child)::after { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero, .contact-bar, .project-header, .project-content, .footer { padding-left: 20px; padding-right: 20px; }
+  .stat-block { min-width: 100%; border-radius: 0 !important; border-bottom: 1px solid var(--border); }
+  .stat-block:last-child { border-bottom: none; }
+  
+  /* Typography and spacing adjustments for small screens */
+  .hero-name { font-size: 42px; }
+  .project-title { font-size: 32px; }
+  .project-number { font-size: 60px; right: 20px; top: 10px; }
+  .contact-links, .footer-links { flex-direction: column; gap: 12px; }
+  .theme-toggle-btn { bottom: 16px; left: 16px; padding: 6px 12px; }
 }
 
 /* ─── PRINT ─────────────────────────────────────────────────────── */
